@@ -27,6 +27,7 @@ export interface BookSearchPluginSettings {
   serviceProvider: ServiceProvider;
   naverClientId: string;
   naverClientSecret: string;
+  kakaoRestApiKey: string;
   localePreference: string;
   apiKey: string;
   openPageOnCompletion: boolean;
@@ -48,6 +49,7 @@ export const DEFAULT_SETTINGS: BookSearchPluginSettings = {
   serviceProvider: ServiceProvider.google,
   naverClientId: '',
   naverClientSecret: '',
+  kakaoRestApiKey: '',
   localePreference: 'default',
   apiKey: '',
   openPageOnCompletion: true,
@@ -196,7 +198,7 @@ export class BookSearchSettingTab extends PluginSettingTab {
     const toggleServiceProviderExtraSettings = (
       serviceProvider: ServiceProvider = this.plugin.settings?.serviceProvider,
     ) => {
-      if (serviceProvider === ServiceProvider.naver) {
+      if (serviceProvider === ServiceProvider.naver || serviceProvider === ServiceProvider.kakao) {
         showServiceProviderExtraSettingButton();
         hideServiceProviderExtraSettingDropdown();
         hideCoverImageEdgeCurlToggle();
@@ -212,7 +214,8 @@ export class BookSearchSettingTab extends PluginSettingTab {
       .setClass('book-search-plugin__settings--service_provider')
       .addDropdown(dropDown => {
         dropDown.addOption(ServiceProvider.google, `${ServiceProvider.google} (Global)`);
-        dropDown.addOption(ServiceProvider.naver, `${ServiceProvider.naver} (Korean)`);
+        dropDown.addOption(ServiceProvider.kakao, `${ServiceProvider.kakao} (Korean)`);
+        dropDown.addOption(ServiceProvider.naver, `${ServiceProvider.naver} (Korean, 2026-07-31 서비스 종료)`);
         dropDown.setValue(this.plugin.settings?.serviceProvider ?? ServiceProvider.google);
         dropDown.onChange(async value => {
           const newValue = value as ServiceProvider;

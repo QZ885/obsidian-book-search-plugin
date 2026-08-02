@@ -54,13 +54,25 @@ export class SettingServiceProviderModal extends Modal {
 
     contentEl.createEl('h2', { text: 'Service Provider Setting' });
 
-    new Setting(contentEl).setName('Client ID').addText(text => {
-      text.setValue(this.currentClientId).onChange(value => this.saveClientId(value));
-    });
+    if (this.currentServiceProvider === ServiceProvider.kakao) {
+      // 카카오 책 검색은 REST API 키 하나만 사용한다.
+      new Setting(contentEl)
+        .setName('REST API Key')
+        .setDesc('카카오 개발자센터(developers.kakao.com)의 [내 애플리케이션 > 앱 키]에서 발급받은 REST API 키')
+        .addText(text => {
+          text.setValue(this.settings.kakaoRestApiKey ?? '').onChange(value => {
+            this.settings.kakaoRestApiKey = value.trim();
+          });
+        });
+    } else {
+      new Setting(contentEl).setName('Client ID').addText(text => {
+        text.setValue(this.currentClientId).onChange(value => this.saveClientId(value));
+      });
 
-    new Setting(contentEl).setName('Client Secret').addText(text => {
-      text.setValue(this.currentClientSecret).onChange(value => this.saveClientSecret(value));
-    });
+      new Setting(contentEl).setName('Client Secret').addText(text => {
+        text.setValue(this.currentClientSecret).onChange(value => this.saveClientSecret(value));
+      });
+    }
 
     new Setting(contentEl).addButton(btn =>
       btn

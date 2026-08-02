@@ -3,6 +3,7 @@ import { BookSearchPluginSettings } from '@settings/settings';
 import { ServiceProvider } from '@src/constants';
 import { requestUrl } from 'obsidian';
 import { GoogleBooksApi } from './google_books_api';
+import { KakaoBooksApi } from './kakao_books_api';
 import { NaverBooksApi } from './naver_books_api';
 
 export interface BaseBooksApiImpl {
@@ -23,8 +24,17 @@ export function factoryServiceProvider(settings: BookSearchPluginSettings): Base
     case ServiceProvider.naver:
       validateNaverSettings(settings);
       return new NaverBooksApi(settings.naverClientId, settings.naverClientSecret);
+    case ServiceProvider.kakao:
+      validateKakaoSettings(settings);
+      return new KakaoBooksApi(settings.kakaoRestApiKey);
     default:
       throw new Error('Unsupported service provider.');
+  }
+}
+
+function validateKakaoSettings(settings: BookSearchPluginSettings): void {
+  if (!settings.kakaoRestApiKey) {
+    throw new ConfigurationError('카카오 개발자센터에서 "REST API 키"를 발급받아 설정해주세요.');
   }
 }
 
